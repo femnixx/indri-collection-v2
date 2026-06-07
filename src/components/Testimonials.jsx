@@ -1,65 +1,111 @@
 import React from 'react';
 
-const reviews = [
-  { name: "Sari W.", role: "Pelanggan Setia", text: "Kualitas jahitannya sangat rapi dan teliti. Saya sudah pesan 3x dan selalu puas!" },
-  { name: "Budi P.", role: "UMKM Owner", text: "Seragam karyawan saya dari Indri Collection. Cepat, rapi, dan harganya fair." },
-  { name: "Dina R.", role: "Ibu Rumah Tangga", text: "Baturannya cantik banget, warnanya tidak luntur setelah dicuci berkali-kali." },
-  { name: "Eko S.", role: "Guru", text: "Senang bisa mendukung UMKM lokal yang punya cerita luar biasa ini." },
-  { name: "Rina A.", role: "Mahasiswi", text: "Pesanan custom dress wisuda saya persis seperti yang diinginkan. Recommended!" },
-  { name: "Hasan M.", role: "Pengusaha", text: "Kerjasama yang profesional. Pengiriman tepat waktu dan kemasan sangat baik." },
-];
+export default function Testimonial() {
+  const topRowReviews = [
+    { 
+      name: "Rian Aditya", 
+      role: "Pelanggan Setia", 
+      text: "Kualitas jahitan kemeja batiknya luar biasa rapi. Kerah kokoh dan potongan kainnya presisi. Sangat bangga memakai karya teman-teman disabilitas luar biasa ini." 
+    },
+    { 
+      name: "Siti Rahma", 
+      role: "Koordinator Komunitas", 
+      text: "Pesan seragam custom untuk acara komunitas dalam jumlah banyak, semuanya selesai tepat waktu dengan kualitas finishing premium. Jahitannya kuat sekali!" 
+    },
+    { 
+      name: "Budi Santoso", 
+      role: "Pemilik UMKM", 
+      text: "Sangat puas dengan pengerjaan kain tenunnya. Komunikasi selama proses pengerjaan sangat ramah. Rekomendasi utama untuk konveksi di Kota Malang!" 
+    }
+  ];
 
-function TestimonialCard({ item }) {
-  const initials = item.name.split(' ').map(w => w[0]).join('').substring(0, 2);
-  return (
-    <div className="bg-white border border-[#eddcc8] rounded-[4px] p-6 w-[300px] shrink-0 mr-5">
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-full bg-[#EDD9C0] flex items-center justify-center font-bold text-sm text-[#C8956A] shrink-0">
-            {initials}
+  const bottomRowReviews = [
+    { 
+      name: "Dewi Lestari", 
+      role: "Pecinta Fashion Lokal", 
+      text: "Potongan baju casual-nya pas banget di badan. Detail kecil seperti penempatan kancing dan jahitan tepi bener-bener diperhatikan secara detail." 
+    },
+    { 
+      name: "Ahmad Fauzi", 
+      role: "Pelanggan Seragam", 
+      text: "Kainnya nyaman digunain dan pengerjaan bordir logo sangat detail. Hasil tidak kalah dengan konveksi skala besar nasional." 
+    },
+    { 
+      name: "Mega Utami", 
+      role: "Pelanggan Setia", 
+      text: "Setiap helai kain kerasa dibuat pakai hati. Indri Collection ngebuktiin kalau keterbatasan fisik bukan halangan buat ngasilin produk berkualitas juara." 
+    }
+  ];
+
+  // Menggandakan data ulasan tiga kali lipat untuk membangun rantai transisi tanpa putus (Seamless Infinite Loop)
+  const extendedTopRow = [...topRowReviews, ...topRowReviews, ...topRowReviews];
+  const extendedBottomRow = [...bottomRowReviews, ...bottomRowReviews, ...bottomRowReviews];
+
+  const renderReviewCard = (review, idx, rowKey) => (
+    <div 
+      key={`${rowKey}-${idx}`} 
+      className="w-[360px] sm:w-[400px] flex-shrink-0 bg-white rounded-[20px] p-6 sm:p-8 shadow-[0_6px_20px_rgba(94,161,228,0.03)] border border-slate-100 flex flex-col justify-between relative group select-none"
+    >
+      {/* Ikon Jarum Pentul/Peniti Dekoratif khas Konveksi */}
+      <div className="absolute top-4 right-4 opacity-10 text-xl group-hover:opacity-40 transition-opacity">🧷</div>
+      
+      <div>
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-dashed border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#5EA1E4] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+              {review.name.charAt(0)}
+            </div>
+            <div>
+              <h4 className="font-sans text-[15px] font-bold text-[#1E2E42]">{review.name}</h4>
+              <span className="text-[12px] text-slate-400 block">{review.role}</span>
+            </div>
           </div>
-          <div>
-            <div className="text-[13px] font-bold text-[#1C2B3A]">{item.name}</div>
-            <div className="text-[11px] text-[#999]">{item.role}</div>
-          </div>
+          <span className="text-[#E28743] text-xs tracking-wider">★★★★★</span>
         </div>
-        <div className="text-[#D4A853] text-[13px] tracking-[1px]">★★★★★</div>
-      </div>
-      <hr className="border-none border-t border-[#f0e8da] my-3" />
-      <div className="text-[13px] text-[#666] leading-[1.7] font-light">{item.text}</div>
-    </div>
-  );
-}
-
-export default function Testimonials() {
-  const half = Math.ceil(reviews.length / 2);
-  const row1 = [...reviews.slice(0, half), ...reviews.slice(0, half), ...reviews.slice(0, half)];
-  const row2 = [...reviews.slice(half), ...reviews.slice(half), ...reviews.slice(half)];
-
-  return (
-    <section id="testimonial" className="py-22 bg-[#FDF8F2]">
-      <div className="px-[5%] text-center">
-        <div className="text-[11px] tracking-[.2em] uppercase text-[#C8956A] mb-3 flex items-center justify-center gap-2.5 before:content-[''] before:w-6 before:h-[1px] before:bg-[#C8956A] reveal">
-          Kata Mereka
-        </div>
-        <h2 className="font-['Playfair_Display',serif] text-3xl sm:text-4xl text-[#1C2B3A] leading-tight reveal">
-          Apa yang <em className="text-[#C8956A] not-italic">Pelanggan</em> Bilang
-        </h2>
-        <p className="text-[#888] font-light text-sm mt-2 reveal">
-          Kepercayaan Anda adalah kebanggaan kami
+        <p className="text-slate-600 text-[14px] leading-[1.65] font-normal italic">
+          "{review.text}"
         </p>
       </div>
+    </div>
+  );
 
-      <div className="overflow-hidden mt-10 group">
-        <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
-          {row1.map((item, idx) => <TestimonialCard key={idx} item={item} />)}
-        </div>
+  return (
+    <section id="testimonial" className="py-24 bg-[#F4F9FF] overflow-hidden relative bg-fabric-matrix">
+      
+      {/* Garis pembatas struktural horizontal */}
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-slate-200" />
+
+      {/* Bagian Kepala Judul / Header Section - Terinspirasi dari image_5b7529.png */}
+      <div className="text-center mb-16 px-4">
+        <span className="font-sans text-sm font-bold tracking-widest text-[#5EA1E4] uppercase block mb-2">
+          Testimoni Pelanggan
+        </span>
+        <h2 className="font-sans text-3xl sm:text-4xl text-[#1E2E42] font-black tracking-tight leading-tight max-w-2xl mx-auto">
+          Kata Mereka yang <span className="text-[#5EA1E4]">Mencintai Karya Kami</span>
+        </h2>
       </div>
 
-      <div className="overflow-hidden mt-5 group">
-        <div className="flex w-max pl-40 animate-marquee-right group-hover:[animation-play-state:paused]">
-          {row2.map((item, idx) => <TestimonialCard key={idx} item={item} />)}
+      {/* Jalur Lintasan Animasi Marquee Gulir Tanpa Batas */}
+      <div className="flex flex-col gap-8 w-full max-w-[100vw] overflow-hidden relative">
+        
+        {/* Lapisan Gradien Efek Vinyet Lembut di Sisi Kiri & Kanan Trek */}
+        <div className="absolute left-0 top-0 bottom-0 w-[8%] bg-gradient-to-r from-[#F4F9FF] to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-[8%] bg-gradient-to-l from-[#F4F9FF] to-transparent z-20 pointer-events-none" />
+
+        {/* BARIS ATAS: Berjalan dari Kiri ke Kanan */}
+        <div className="w-full overflow-hidden">
+          <div className="flex gap-6 w-max animate-marquee-right hover:[animation-play-state:paused] py-2">
+            {extendedTopRow.map((review, idx) => renderReviewCard(review, idx, 'top'))}
+          </div>
         </div>
+
+        {/* BARIS BAWAH: Berjalan dari Kanan ke Kiri */}
+        <div className="w-full overflow-hidden">
+          <div className="flex gap-6 w-max animate-marquee-left hover:[animation-play-state:paused] py-2">
+            {extendedBottomRow.map((review, idx) => renderReviewCard(review, idx, 'bottom'))}
+          </div>
+        </div>
+
       </div>
     </section>
   );

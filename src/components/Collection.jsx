@@ -1,47 +1,172 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+// Hook animasi scroll re-triggerable
+function useScrollReveal(threshold = 0.1) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      threshold,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, visible];
+}
+
+// Data sampel produk katalog berdasarkan struktur visual di image_5b629a.jpg (Tanpa Properti Harga)
+const collectionData = [
+  { id: 1, title: 'Premium White Blazer', category: 'Formal', img: 'https://images.unsplash.com/photo-1548624149-f9b1859aa7d0?auto=format&fit=crop&w=500&q=80' },
+  { id: 2, title: 'Ruffled Linen Shirt', category: 'Casual', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80' },
+  { id: 3, title: 'Classic Woven Straw Hat', category: 'Aksesoris', img: 'https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?auto=format&fit=crop&w=500&q=80' },
+  { id: 4, title: 'Tailored Jumpsuit Black', category: 'Formal', img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=500&q=80' },
+];
 
 export default function Collection() {
-  const collections = [
-    { title: "Batik Malang", label: "Kemeja", bg: "bg-[#0066AE]" },
-    { title: "Tenun Modern", label: "Dress", bg: "bg-[#4D96A8]" },
-    { title: "Custom Order", label: "Seragam", bg: "bg-[#002D54]" },
-    { title: "Everyday Wear", label: "Casual", bg: "bg-slate-700" }
-  ];
+  const [sectionRef, sectionVisible] = useScrollReveal(0.05);
+  const carouselRef = useRef(null);
+
+  // Navigasi geser linear mulus untuk track item carousel
+  const handleScroll = (direction) => {
+    if (!carouselRef.current) return;
+    const cardWidth = 320; 
+    const gap = 24;
+    const scrollAmount = direction === 'left' ? -(cardWidth + gap) : (cardWidth + gap);
+    
+    carouselRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  const baseTransition = 'transition-all ease-out duration-700';
 
   return (
-    <section id="collection" className="px-[5%] py-20 relative overflow-hidden bg-[#F1F5F9]">
-      <div className="text-center mb-12">
-        <div className="reveal text-[11px] tracking-[.2em] uppercase text-[#0066AE] mb-3 flex items-center justify-center gap-2.5 before:content-[''] before:w-6 before:h-[1px] before:bg-[#0066AE]">
-          Produk Kami
-        </div>
-        <h2 className="reveal delay-[100ms] font-['Playfair_Display',serif] text-3xl sm:text-4xl text-[#002D54] leading-tight">
-          Koleksi <em className="text-[#0066AE] not-italic">Pilihan</em>
+    <section 
+      id="collection" 
+      ref={sectionRef}
+      className="px-[5%] py-24 bg-[#F8FAFC] relative overflow-hidden"
+    >
+      {/* Aksen Latar Belakang Grafis Siluet Gunting */}
+      <div className="absolute left-[-10%] top-[20%] text-[180px] opacity-[0.02] select-none pointer-events-none">✂</div>
+
+      {/* Bagian Kepala Judul / Header - Sesuai dengan Gambar image_5b629a.jpg */}
+      <div className="text-center mb-16 flex flex-col items-center">
+        <h2 
+          style={{ transitionDelay: '100ms' }}
+          className={`font-sans text-4xl md:text-5xl text-[#1E2E42] font-black tracking-tight ${baseTransition}
+            ${sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          Koleksi <span className="text-[#5EA1E4]">Kami</span>
         </h2>
-        <p className="reveal delay-[200ms] text-slate-500 font-light text-sm mt-2">
-          Setiap helai dibuat dengan ketelitian dan rasa bangga
+        <p 
+          style={{ transitionDelay: '250ms' }}
+          className={`text-slate-500 text-sm md:text-base max-w-xl mt-4 font-normal leading-relaxed ${baseTransition}
+            ${sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          Temukan pilihan busana premium yang dikurasi secara khusus untuk individu modern, dirancang dengan ketelitian tinggi oleh para ahli konveksi kami.
         </p>
+        
+        {/* Pembatas Jahitan Dekoratif Putus-putus Biru */}
+        <div 
+          style={{ 
+            backgroundImage: 'linear-gradient(to right, #5EA1E4 50%, transparent 50%)', 
+            backgroundSize: '10px 100%',
+            transitionDuration: '1000ms',
+            transitionDelay: '400ms'
+          }}
+          className={`h-[2px] mt-6 ${baseTransition} ${sectionVisible ? 'w-24 opacity-100' : 'w-0 opacity-0'}`}
+        />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {collections.map((item, idx) => (
-          <div 
-            key={idx} 
-            className="reveal group rounded-[6px] overflow-hidden relative cursor-pointer bg-white shadow-xs border border-slate-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-            style={{ transitionDelay: `${idx * 100}ms` }}
-          >
-            <div className={`w-full h-[320px] ${item.bg} flex items-center justify-center font-light text-xs text-white/30 group-hover:scale-105 transition-transform duration-500`}>
-              <span>Koleksi {idx + 1}</span>
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#002D54]/95 via-[#002D54]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
-              <div className="text-[11px] tracking-[.12em] uppercase text-[#4D96A8] transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300 delay-[50ms]">
-                {item.label}
+      {/* Area Pembungkus Slider Carousel */}
+      <div className="relative max-w-7xl mx-auto px-4">
+        
+        {/* Tombol Navigasi Kiri (Arrow Left) */}
+        <button 
+          onClick={() => handleScroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 z-30 w-12 h-12 rounded-full bg-white text-[#1E2E42] border border-slate-100 shadow-lg flex items-center justify-center hover:bg-[#5EA1E4] hover:text-white hover:border-[#5EA1E4] transition-all duration-300 active:scale-90"
+          aria-label="Koleksi sebelumnya"
+        >
+          <span className="text-lg font-bold">‹</span>
+        </button>
+
+        {/* Tombol Navigasi Kanan (Arrow Right) */}
+        <button 
+          onClick={() => handleScroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 z-30 w-12 h-12 rounded-full bg-white text-[#1E2E42] border border-slate-100 shadow-lg flex items-center justify-center hover:bg-[#5EA1E4] hover:text-white hover:border-[#5EA1E4] transition-all duration-300 active:scale-90"
+          aria-label="Koleksi berikutnya"
+        >
+          <span className="text-lg font-bold">›</span>
+        </button>
+
+        {/* Kontainer Utama Jalur Geser Track Item Swatch */}
+        <div 
+          ref={carouselRef}
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-8 pt-4 px-2"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {collectionData.map((item, idx) => {
+            // Efek pemunculan kartu secara bertahap (Staggered fade-in)
+            const cardDelay = `${200 + idx * 100}ms`;
+            
+            return (
+              <div
+                key={item.id}
+                style={{ transitionDelay: sectionVisible ? cardDelay : '0ms' }}
+                className={`w-[290px] sm:w-[310px] flex-shrink-0 snap-start bg-white rounded-[24px] border border-slate-100 shadow-xs hover:shadow-xl transition-all duration-500 group relative overflow-hidden ${baseTransition}
+                  ${sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+              >
+                {/* Frame Utama Gambar Visual Produk */}
+                <div className="w-full h-[360px] relative overflow-hidden rounded-t-[24px] bg-slate-50">
+                  <img 
+                    src={item.img} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+                  />
+                  
+                  {/* Label Kategori Gantung Kain Tiruan */}
+                  <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs text-[#1E2E42] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs border border-white/40">
+                    📍 {item.category}
+                  </span>
+
+                  {/* Panel Detail Jahitan yang Bergeser ke Atas saat Di-hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#10324A]/90 via-[#10324A]/40 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex flex-col justify-end p-6">
+                    <div className="border border-dashed border-[#5EA1E4]/40 rounded-xl p-4 text-white text-center">
+                      <span className="font-sans font-bold text-lg text-[#5EA1E4] block mb-1">Detail Kualitas</span>
+                      <p className="text-[11px] text-slate-200 leading-relaxed font-light">Setiap potong kain diproses dengan teknik presisi tinggi demi mengutamakan kenyamanan esensial.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bagian Informasi Teks Bawah Card (Tanpa Nilai Harga) */}
+                <div className="p-6 relative bg-white rounded-b-[24px] border-t border-slate-50">
+                  {/* Simulasi garis gantungan tag kecil */}
+                  <div className="absolute top-0 left-8 w-[1px] h-3 bg-dashed bg-slate-200 pointer-events-none" />
+
+                  <div className="flex justify-between items-center gap-2">
+                    <h3 className="text-[#1E2E42] font-bold text-base tracking-tight truncate group-hover:text-[#5EA1E4] transition-colors duration-300 max-w-[170px] sm:max-w-[190px]">
+                      {item.title}
+                    </h3>
+                    
+                    {/* Tombol Detail diposisikan rata kanan di samping judul */}
+                    <button 
+                      className="text-xs bg-[#F4F9FF] text-[#5EA1E4] font-bold px-4 py-2 rounded-full border border-[#5EA1E4]/10 hover:bg-[#5EA1E4] hover:text-white hover:border-transparent transition-all duration-300 active:scale-95 flex-shrink-0"
+                    >
+                      Detail ✂
+                    </button>
+                  </div>
+                </div>
+
               </div>
-              <div className="font-['Playfair_Display',serif] text-base font-bold text-white transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300 delay-[100ms]">
-                {item.title}
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );

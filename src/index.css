@@ -1,14 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@300;400;600;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Official Standards from image_65e5cb.jpg */
-  --color-bca-blue: #0066AE;       /* Biru BCA / Hex #0066AE */
-  --color-bca-toska: #4D96A8;      /* Toska BCA (Pantone 633 equivalent hex) */
+  --color-indri-blue: #5EA1E4;      /* Sky blue tone from logo fill */
+  --color-indri-dark: #1E2E42;      /* Deep typography contrast color */
+  --color-sky-bg: #F4F9FF;          /* Soft light-sky panel fill */
+  --color-star-gold: #E28743;       /* Orange-gold star rating fill */
   
-  /* Neutral Layout Accents */
-  --color-bca-dark: #002D54;       /* Deep navy tint for high-contrast headers/footers */
-  --color-clean-bg: #FFFFFF;      /* Primary layout base */
-  --color-soft-slate: #F1F5F9;    /* Clean secondary section alternates */
+  /* Brand New Convection Accents */
+  --font-sewing: 'Caveat', cursive; /* Matches the unique script in image_65dae7.jpg */
+  --font-sans: 'Inter', sans-serif;
 }
 
 html {
@@ -16,21 +17,59 @@ html {
 }
 
 body {
-  font-family: 'Lato', sans-serif;
-  background: var(--color-clean-bg);
-  color: var(--color-bca-dark);
+  font-family: var(--font-sans);
+  background: #FFFFFF;
+  color: var(--color-indri-dark);
   overflow-x: hidden;
 }
 
-/* Scroll Reveal Core Animations */
+/* --- Tailor-Made Convection Accents --- */
+
+/* Real Thread Stitching Lines */
+.stitch-line-horizontal {
+  background-image: linear-gradient(to right, #5EA1E4 50%, rgba(255,255,255,0) 0%);
+  background-position: bottom;
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+}
+
+/* Fabric Cross-Stitch Backing Grid pattern instead of basic tech dots */
+.bg-fabric-matrix {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(94, 161, 228, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(94, 161, 228, 0.04) 1px, transparent 1px);
+}
+
+/* Animations */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .7s ease, transform .7s ease;
+  transition: opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.reveal.from-left { transform: translateX(-36px); }
-.reveal.from-right { transform: translateX(36px); }
+.reveal.from-bottom { transform: translateY(30px); }
+.reveal.from-left { transform: translateX(-40px); }
+.reveal.from-right { transform: translateX(40px); }
+.reveal.from-right-row { transform: translateX(50px); }
+.reveal.from-left-row { transform: translateX(-50px); }
 .reveal.visible {
   opacity: 1;
   transform: translate(0);
+}
+
+@keyframes custom-marquee-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes custom-marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee-left {
+  animation: custom-marquee-left 35s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: custom-marquee-right 35s linear infinite;
 }
